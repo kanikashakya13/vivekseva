@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VivekSeva – Serve. Connect. Grow. | Human-Service Platform</title>
+  <meta name="description" content="VivekSeva is a human-service platform inspired by Swami Vivekananda's philosophy of Seva, human dignity, character development, and collective upliftment.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            saffron: {
+              50: '#FFF7ED',
+              100: '#FFEDD5',
+              200: '#FED7AA',
+              300: '#FDBA74',
+              400: '#FB923C',
+              500: '#F97316',
+              600: '#EA580C',
+              700: '#C2410C',
+              800: '#9A3412',
+              900: '#7C2D12',
+            },
+            navy: {
+              800: '#1E293B',
+              900: '#0F172A',
+              950: '#020617',
+            },
+            gold: {
+              400: '#FBBF24',
+              500: '#F59E0B',
+              600: '#D97706',
+              700: '#B45309',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="mandala-bg-pattern min-h-screen flex flex-col antialiased text-slate-800">
+
+  <!-- ========================================================
+       TOP BANNER & DEMO ROLE SWITCHER BAR
+       ======================================================== -->
+  <div class="bg-navy-900 text-amber-100 text-xs py-1.5 px-4 border-b border-amber-900/60 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center space-x-2 text-[11px]">
+        <span class="font-bold flex items-center text-amber-400">
+          <i class="fas fa-hands-holding-circle mr-1.5 text-sm text-saffron-500"></i> VivekSeva
+        </span>
+        <span class="text-amber-200/80 hidden sm:inline">“Serve. Connect. Grow.”</span>
+        <span class="text-[10px] bg-amber-900/70 text-amber-300 px-2 py-0.5 rounded font-medium border border-amber-800/60 hidden md:inline">
+          Inspired by the ideals of Swami Vivekananda
+        </span>
+      </div>
+
+      <!-- Quick Persona Switcher for effortless testing -->
+      <div class="flex items-center space-x-2 text-[11px]">
+        <span class="text-slate-400 hidden sm:inline">Demo Personas:</span>
+        <button onclick="window.app.quickLogin('usr_helper_arjun')" class="px-2 py-0.5 rounded bg-saffron-600 hover:bg-saffron-500 text-white font-semibold transition-colors" title="Login as Helper Arjun">
+          <i class="fas fa-hand-holding-heart mr-1"></i> Helper (Arjun)
+        </button>
+        <button onclick="window.app.quickLogin('usr_needer_sunita')" class="px-2 py-0.5 rounded bg-blue-700 hover:bg-blue-600 text-white font-semibold transition-colors" title="Login as Needer Sunita">
+          <i class="fas fa-hands-praying mr-1"></i> Needer (Sunita)
+        </button>
+        <button onclick="window.app.quickLogin('usr_dual_priya')" class="px-2 py-0.5 rounded bg-purple-700 hover:bg-purple-600 text-white font-semibold transition-colors" title="Login as Dual Role Priya">
+          <i class="fas fa-repeat mr-1"></i> Both (Priya)
+        </button>
+        <button onclick="window.app.logout(true)" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition-colors" title="Test as Guest">
+          Guest
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MAIN RESPONSIVE NAVIGATION HEADER
+       ======================================================== -->
+  <header class="bg-white/95 backdrop-blur-md sticky top-7 z-40 border-b border-amber-100 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        
+        <!-- Brand Logo & Motto -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="window.app.navigateTo('landing')">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-saffron-600 to-amber-500 flex items-center justify-center text-white shadow-md">
+            <i class="fas fa-hands-holding-heart text-xl"></i>
+          </div>
+          <div>
+            <div class="flex items-baseline space-x-1.5">
+              <span class="text-xl font-extrabold tracking-tight text-navy-900 font-heading">Vivek<span class="text-saffron-600">Seva</span></span>
+            </div>
+            <p class="text-[10px] font-semibold text-slate-500 -mt-0.5">Serve. Connect. Grow.</p>
+          </div>
+        </div>
+
+        <!-- Role Badge & Switch Role Button (for logged-in dual role or current role) -->
+        <div id="nav-role-container" class="hidden md:flex items-center space-x-2">
+          <!-- Dynamically populated based on login state -->
+        </div>
+
+        <!-- Desktop Navigation Items (Dynamically rendered based on Public, Helper, or Needer role) -->
+        <nav id="desktop-nav-links" class="hidden lg:flex items-center space-x-1 text-xs font-semibold text-slate-600">
+          <!-- Populated dynamically by window.app.renderNavigation() -->
+        </nav>
+
+        <!-- Right Header Action Buttons -->
+        <div class="flex items-center space-x-2.5">
+          <!-- Notification Bell -->
+          <div id="nav-notification-container" class="relative hidden">
+            <button onclick="window.app.toggleNotificationDrawer()" class="p-2 rounded-xl text-slate-600 hover:text-saffron-700 hover:bg-amber-50 transition-colors relative" title="Notifications" aria-label="Notifications">
+              <i class="fas fa-bell text-lg"></i>
+              <span id="notif-badge-count" class="absolute top-1 right-1 w-4 h-4 bg-saffron-600 text-white rounded-full text-[10px] font-extrabold flex items-center justify-center hidden">0</span>
+            </button>
+          </div>
+
+          <!-- Auth Buttons Container (Login/SignUp or User Profile Menu) -->
+          <div id="nav-auth-container" class="flex items-center space-x-2">
+            <!-- Populated dynamically -->
+          </div>
+
+          <!-- Mobile Hamburger Toggle -->
+          <button onclick="document.getElementById('mobile-drawer').classList.toggle('hidden')" class="lg:hidden p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Collapsible Menu Drawer -->
+    <div id="mobile-drawer" class="hidden lg:hidden border-t border-amber-100 bg-white px-4 pt-2 pb-4 space-y-1 text-xs font-bold shadow-lg">
+      <div id="mobile-nav-links" class="space-y-1">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       SLIDE-OUT NOTIFICATIONS DRAWER
+       ======================================================== -->
+  <div id="notifications-drawer" class="hidden fixed top-24 right-4 sm:right-10 z-50 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-amber-200 overflow-hidden">
+    <div class="p-3.5 bg-amber-50 border-b border-amber-100 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-bell text-saffron-700"></i>
+        <h4 class="text-xs font-bold text-slate-900">Notifications & Insights</h4>
+      </div>
+      <button onclick="window.app.markAllNotificationsRead()" class="text-[11px] font-semibold text-saffron-800 hover:underline">
+        Mark all read
+      </button>
+    </div>
+    <div id="notifications-list-container" class="max-h-96 overflow-y-auto p-2 space-y-2">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MAIN APPLICATION VIEWS CONTAINER
+       ======================================================== -->
+  <main id="app-view-container" class="flex-1 pb-16 lg:pb-8">
+    
+    <!-- ----------------------------------------------------
+         1. PUBLIC LANDING PAGE (VIEW: landing)
+         ---------------------------------------------------- -->
+    <section id="view-landing" class="view-panel">
+      
+      <!-- Hero Section -->
+      <div class="saffron-hero-gradient border-b border-amber-200/60 py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto text-center space-y-6">
+          <div class="inline-flex items-center space-x-2 bg-white/80 border border-saffron-300/60 rounded-full px-4 py-1.5 shadow-xs">
+            <span class="w-2 h-2 rounded-full bg-saffron-600 animate-pulse"></span>
+            <span class="text-xs font-bold text-saffron-800 tracking-wide uppercase">VIVEKSEVA PLATFORM</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-6xl font-extrabold text-navy-900 tracking-tight leading-tight">
+            Serve. Connect. <span class="text-saffron-600">Grow.</span>
+          </h1>
+
+          <p class="text-lg sm:text-xl text-slate-700 max-w-3xl mx-auto font-medium">
+            A platform connecting people who need help with people willing to serve.
+          </p>
+
+          <p class="text-xs sm:text-sm text-slate-500 italic max-w-xl mx-auto">
+            “Inspired by the ideals of Swami Vivekananda.”
+          </p>
+
+          <!-- Primary Hero CTA Buttons -->
+          <div class="pt-4 flex flex-wrap justify-center gap-4">
+            <button onclick="window.app.openSignUpModal('helper')" class="px-8 py-3.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center space-x-2 transform hover:-translate-y-0.5">
+              <i class="fas fa-hand-holding-heart text-base"></i>
+              <span>I WANT TO HELP</span>
+            </button>
+            <button onclick="window.app.openSignUpModal('needer')" class="px-8 py-3.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center space-x-2 transform hover:-translate-y-0.5">
+              <i class="fas fa-hands-praying text-base text-amber-400"></i>
+              <span>I NEED HELP</span>
+            </button>
+          </div>
+
+          <!-- Secondary Actions -->
+          <div class="pt-2 flex justify-center space-x-6 text-xs font-semibold text-slate-600">
+            <button onclick="window.app.openLoginModal()" class="hover:text-saffron-700 underline">LOGIN</button>
+            <span>•</span>
+            <button onclick="window.app.openSignUpModal()" class="hover:text-saffron-700 underline">SIGN UP</button>
+          </div>
+
+          <!-- Verified Swami Vivekananda Hero Quote Card -->
+          <div class="pt-8 max-w-2xl mx-auto">
+            <div class="quote-card p-6 text-left shadow-sm">
+              <p class="text-base sm:text-lg font-serif-accent text-navy-900 leading-relaxed italic">
+                “They alone live who live for others, the rest are more dead than alive.”
+              </p>
+              <p class="text-xs font-bold text-saffron-700 mt-2 text-right">
+                — Swami Vivekananda (Complete Works, Vol. 4)
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOW VIVEKSEVA WORKS SECTION -->
+      <div class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center space-y-3 mb-12">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900">HOW VIVEKSEVA WORKS</h2>
+          <p class="text-sm text-slate-600 max-w-2xl mx-auto">
+            Clear, transparent workflows designed to preserve dignity, foster trust, and nurture personal growth.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- For Helpers -->
+          <div class="vs-card p-6 sm:p-8 bg-gradient-to-br from-white to-amber-50/40 border border-saffron-200">
+            <div class="flex items-center space-x-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-saffron-600 text-white flex items-center justify-center font-bold text-lg">
+                <i class="fas fa-hand-holding-heart"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-navy-900">For Helpers</h3>
+                <p class="text-xs text-saffron-700 font-semibold">Self-improvement through selfless action</p>
+              </div>
+            </div>
+
+            <!-- Steps Pipeline -->
+            <div class="space-y-4 text-xs font-semibold text-slate-700">
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-saffron-100 text-saffron-800 flex items-center justify-center text-xs font-bold">1</span>
+                <span>Create Profile</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-saffron-100 text-saffron-800 flex items-center justify-center text-xs font-bold">2</span>
+                <span>Choose Seva Category &amp; Skills</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-saffron-100 text-saffron-800 flex items-center justify-center text-xs font-bold">3</span>
+                <span>Set Availability &amp; Preferred Mode</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-saffron-100 text-saffron-800 flex items-center justify-center text-xs font-bold">4</span>
+                <span>Receive Suitable Matching Requests</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-saffron-100 text-saffron-800 flex items-center justify-center text-xs font-bold">5</span>
+                <span>Serve with Reverence &amp; Dignity</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-saffron-50 border border-saffron-200 text-saffron-900 font-bold shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-saffron-600 text-white flex items-center justify-center text-xs font-bold">6</span>
+                <span>Grow (Track "What Changes in You")</span>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-amber-100">
+              <button onclick="window.app.openSignUpModal('helper')" class="w-full py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white text-xs font-bold transition-all text-center">
+                Register as a Helper
+              </button>
+            </div>
+          </div>
+
+          <!-- For Needers -->
+          <div class="vs-card p-6 sm:p-8 bg-gradient-to-br from-white to-blue-50/30 border border-blue-200">
+            <div class="flex items-center space-x-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-navy-900 text-amber-400 flex items-center justify-center font-bold text-lg">
+                <i class="fas fa-hands-praying"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-navy-900">For Needers</h3>
+                <p class="text-xs text-blue-700 font-semibold">Safe, respectful community support</p>
+              </div>
+            </div>
+
+            <!-- Steps Pipeline -->
+            <div class="space-y-4 text-xs font-semibold text-slate-700">
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-xs font-bold">1</span>
+                <span>Tell Us Your Need</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-xs font-bold">2</span>
+                <span>AI Finds Suitable Registered Helpers</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-xs font-bold">3</span>
+                <span>Choose a Helper &amp; Review Profile</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-xs font-bold">4</span>
+                <span>Connect via In-App Chat or Private Call</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-white border border-slate-100 shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-xs font-bold">5</span>
+                <span>Receive Dedicated Seva</span>
+              </div>
+              <div class="flex items-center space-x-3 p-2.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 font-bold shadow-xs">
+                <span class="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold">6</span>
+                <span>Give Respectful Feedback</span>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-blue-100">
+              <button onclick="window.app.openSignUpModal('needer')" class="w-full py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold transition-all text-center">
+                Request Support Today
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THE 4 SERVICE CATEGORIES SECTION -->
+      <div id="section-categories" class="py-16 bg-amber-50/50 border-y border-amber-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center space-y-3 mb-12">
+            <span class="text-xs font-bold text-saffron-700 uppercase tracking-widest">CURRENT SERVICE CATEGORIES</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Four Pillars of Human Seva</h2>
+            <p class="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto">
+              Focusing with depth and dignity on four essential human service categories.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="landing-categories-cards-grid">
+            <!-- Dynamically populated with the 4 exact categories -->
+          </div>
+
+          <div class="mt-10 text-center">
+            <button onclick="window.app.navigateTo('seva-categories')" class="px-8 py-3.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs shadow-md transition-all inline-flex items-center space-x-2">
+              <span>View All Categories &amp; In-Depth Details</span>
+              <i class="fas fa-arrow-right ml-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIGNATURE SECTION PREVIEW: WHAT CHANGES IN YOU -->
+      <div class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="vs-card p-8 sm:p-12 bg-gradient-to-r from-navy-900 via-slate-900 to-navy-950 text-white rounded-3xl relative overflow-hidden shadow-2xl">
+          <div class="relative z-10 max-w-3xl space-y-5">
+            <span class="px-3 py-1 rounded-full bg-saffron-500/20 border border-saffron-400 text-saffron-300 text-xs font-extrabold uppercase">
+              Signature VivekSeva Philosophy
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white font-heading">
+              WHAT CHANGES IN YOU
+            </h2>
+            <p class="text-base sm:text-lg text-amber-200 font-serif-accent italic">
+              “Not your rank. Your growth.”
+            </p>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              We never rank helpers against each other. There is no leaderboard. No #25. No comparison. Service is not a race. Your journey is measured against who you were yesterday. Watch your consistency, patience, and character deepen with every act of Seva.
+            </p>
+
+            <div class="pt-4 flex flex-wrap gap-4">
+              <button onclick="window.app.navigateTo('what-changes-in-you')" class="px-6 py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-500 text-white font-bold text-xs shadow-md transition-all">
+                Explore Growth Principles
+              </button>
+              <button onclick="window.app.openShareModal()" class="px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-amber-200 font-bold text-xs border border-white/20 transition-all flex items-center space-x-1.5">
+                <i class="fas fa-share-nodes"></i>
+                <span>Spread the Spirit of Seva</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMMUNITIES & NGOs SPOTLIGHT BANNER -->
+      <div class="py-12 bg-white border-t border-amber-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="vs-card p-8 bg-gradient-to-r from-amber-50/70 to-orange-50/40 border border-amber-200/80 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="space-y-2 max-w-2xl">
+              <span class="text-xs font-bold text-saffron-700 uppercase tracking-widest">GRASSROOTS COLLABORATION</span>
+              <h2 class="text-xl sm:text-2xl font-bold text-navy-900">Partner Communities &amp; NGOs</h2>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Connecting grassroots trusts, foundations, and community initiatives with devoted helpers across India for collective social upliftment.
+              </p>
+            </div>
+            <button onclick="window.app.navigateTo('ngos')" class="px-6 py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold transition-all shadow-xs shrink-0 flex items-center space-x-2">
+              <span>View All Organizations</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SWAMI VIVEKANANDA INSPIRATION SECTION -->
+      <div class="py-16 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+        <div class="w-16 h-16 mx-auto rounded-full bg-saffron-100 text-saffron-700 flex items-center justify-center text-2xl shadow-inner border border-saffron-300">
+          <i class="fas fa-om"></i>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900">The Spirit Behind VivekSeva</h2>
+        <p class="text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          VivekSeva is inspired by Swami Vivekananda's philosophy of selfless service (<em>Selfless service and Seva Yoga</em>), human dignity, education as character development, and collective upliftment. We translate these timeless principles into a modern, safe digital service platform.
+        </p>
+        <div class="pt-2">
+          <button onclick="window.app.navigateTo('about')" class="px-6 py-2 rounded-xl border border-saffron-600 text-saffron-700 font-bold text-xs hover:bg-saffron-50 transition-colors">
+            Read The Full Idea Behind VivekSeva
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         1.5. SEVA CATEGORIES PAGE (VIEW: seva-categories)
+         ---------------------------------------------------- -->
+    <section id="view-seva-categories" class="view-panel hidden py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <!-- Title -->
+      <div class="text-center space-y-3">
+        <span class="text-xs font-bold text-saffron-700 uppercase tracking-widest">FOUR ESSENTIAL PILLARS</span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-navy-900 font-heading">CURRENT SERVICE CATEGORIES</h1>
+        <p class="text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          Focusing with depth and dignity on four essential human service categories. Each category provides dedicated workflows for both Needers seeking assistance and Helpers offering their service.
+        </p>
+      </div>
+
+      <!-- Verified Inspiration Banner -->
+      <div class="max-w-4xl mx-auto">
+        <div class="quote-card p-6 shadow-sm border border-saffron-200">
+          <p class="text-base sm:text-lg font-serif-accent text-navy-900 leading-relaxed italic text-center">
+            “Service to man is service to God. They alone live who live for others, the rest are more dead than alive.”
+          </p>
+          <p class="text-xs font-bold text-saffron-700 mt-2 text-center">
+            — Swami Vivekananda (Complete Works, Vol. 4)
+          </p>
+        </div>
+      </div>
+
+      <!-- In-Depth 4 Categories Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="full-seva-categories-list">
+        <!-- Dynamically rendered by window.app.renderSevaCategoriesView() -->
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------
+         2. ABOUT PAGE (VIEW: about)
+         ---------------------------------------------------- -->
+    <section id="view-about" class="view-panel hidden py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <!-- Title -->
+      <div class="text-center space-y-3">
+        <span class="text-xs font-bold text-saffron-700 uppercase tracking-widest">OUR PHILOSOPHY</span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-navy-900 font-heading">THE IDEA BEHIND VIVEKSEVA</h1>
+        <p class="text-sm text-slate-600 max-w-2xl mx-auto">
+          Translating timeless principles of Seva into a modern, safe and dignified digital platform.
+        </p>
+      </div>
+
+      <!-- Core Statement -->
+      <div class="vs-card p-8 bg-amber-50/60 border border-saffron-200 space-y-4">
+        <h3 class="text-lg font-bold text-navy-900">Ethical Charter &amp; Purpose</h3>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+          VivekSeva is inspired by the teachings of <strong>Swami Vivekananda</strong>, especially the philosophy of <em>Seva</em> (service), human dignity, character development, self-improvement, and social upliftment.
+        </p>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+          We clearly communicate: <em>We do not claim Swami Vivekananda personally proposed this exact software or technology. We are translating his timeless moral principles into a modern digital platform.</em>
+        </p>
+      </div>
+
+      <!-- 4 Core Pillars -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="vs-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-orange-100 text-saffron-700 flex items-center justify-center font-bold">
+            <i class="fas fa-hand-holding-heart"></i>
+          </div>
+          <h4 class="text-base font-bold text-navy-900">1. Dignity Over Charity</h4>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Every human being possesses innate divine perfection. When helping, we do not condescend or patronize. Service is performed with reverence, gratitude, and unconditional respect.
+          </p>
+        </div>
+
+        <div class="vs-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h4 class="text-base font-bold text-navy-900">2. Self-Growth Over Competition</h4>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            There is deliberately NO global leaderboard. No rankings. No “You are #25”. Service is measured only against who you were yesterday through the signature section: <em>What Changes in You</em>.
+          </p>
+        </div>
+
+        <div class="vs-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <h4 class="text-base font-bold text-navy-900">3. Privacy &amp; Dignified Protection</h4>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Personal phone numbers, emails, and exact residential addresses are never publicly exposed. Communication happens via secure in-app messaging and platform-mediated private calls.
+          </p>
+        </div>
+
+        <div class="vs-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <h4 class="text-base font-bold text-navy-900">4. Education &amp; Character Strength</h4>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            “Education is the manifestation of the perfection already in man.” True service awakens self-reliance, intellectual clarity, and deep moral courage in both the giver and receiver.
+          </p>
+        </div>
+      </div>
+
+      <!-- Technology as Pure Connection -->
+      <div class="vs-card p-6 sm:p-8 bg-slate-900 text-white rounded-2xl space-y-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-saffron-500/20 text-saffron-400 flex items-center justify-center font-bold text-lg border border-saffron-400/40">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <div>
+            <h4 class="text-base font-bold text-white">Technology as an Instrument of Pure Connection</h4>
+            <p class="text-xs text-amber-200">Digital capability aligned with spiritual dignity</p>
+          </div>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          Technology often amplifies comparison, envy, and social fragmentation. On VivekSeva, technology is stripped of vanity algorithms, ad revenue motives, and competitive rankings. It serves a single pure purpose: to seamlessly connect the human being in need with the human being ready to give with dignity.
+        </p>
+      </div>
+
+      <!-- Selected Core Inspiration Card -->
+      <div class="max-w-3xl mx-auto">
+        <div class="quote-card p-6 shadow-sm border border-amber-200/80">
+          <p class="text-base sm:text-lg font-serif-accent text-navy-900 leading-relaxed italic text-center">
+            “Our duty is to encourage everyone in his struggle to live up to his own highest idea, and strive at the same time to make the ideal as near to the truth as possible.”
+          </p>
+          <div class="mt-3 flex flex-col sm:flex-row justify-between items-center text-xs gap-1">
+            <span class="text-slate-500 italic">Selfless Service &amp; Character Development</span>
+            <span class="font-bold text-saffron-700">— Swami Vivekananda (Complete Works, Vol. 1)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------
+         3. HELPER DASHBOARD (VIEW: helper-dashboard)
+         ---------------------------------------------------- -->
+    <section id="view-helper-dashboard" class="view-panel hidden py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <!-- Header Banner -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <div>
+          <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">HELPER DASHBOARD</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900" id="helper-welcome-title">Welcome, Arjun</h1>
+          <p class="text-xs text-slate-500 mt-1">Your dedication brings light and nourishment to the community.</p>
+        </div>
+
+        <!-- Availability Status Pill & Toggle -->
+        <div class="flex items-center space-x-3">
+          <div class="text-right">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">Your Current Status</span>
+            <span id="helper-status-badge" class="px-3 py-1 rounded-full text-xs font-bold badge-available-now">
+              AVAILABLE NOW
+            </span>
+          </div>
+          <button onclick="window.app.navigateTo('helper-availability')" class="px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-saffron-800 text-xs font-bold border border-amber-200 transition-colors">
+            <i class="fas fa-calendar-gear mr-1"></i> Manage Availability
+          </button>
+        </div>
+      </div>
+
+      <!-- SIGNATURE SECTION: WHAT CHANGES IN YOU -->
+      <div class="vs-card p-6 sm:p-8 bg-gradient-to-br from-amber-50/60 via-white to-orange-50/40 border-2 border-saffron-300 shadow-md">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">
+          <div>
+            <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-saffron-100 text-saffron-800 text-[11px] font-extrabold uppercase">
+              <i class="fas fa-sparkles text-saffron-600"></i>
+              <span>Signature Feature</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-navy-900 mt-1 font-heading">WHAT CHANGES IN YOU</h2>
+            <p class="text-xs sm:text-sm text-saffron-800 font-medium italic">
+              “Your journey is measured against who you were yesterday.”
+            </p>
+          </div>
+
+          <button onclick="window.app.navigateTo('what-changes-in-you')" class="px-4 py-1.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white text-xs font-bold transition-all shadow-xs">
+            View Full Growth Journey →
+          </button>
+        </div>
+
+        <!-- Level & Points Progress Bar Card -->
+        <div class="bg-white p-5 rounded-xl border border-amber-200 shadow-xs space-y-3 mb-6">
+          <div class="flex justify-between items-baseline">
+            <div>
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Current Growth Level</span>
+              <div class="text-xl sm:text-2xl font-extrabold text-navy-900 flex items-center space-x-2">
+                <span id="helper-growth-level-name">LEVEL 3 — Dedicated Helper</span>
+                <span class="text-base" id="helper-growth-badge">🌸</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Service Points</span>
+              <div class="text-xl sm:text-2xl font-extrabold text-saffron-600" id="helper-growth-points">
+                720 POINTS
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="space-y-1.5">
+            <div class="w-full bg-slate-100 rounded-full h-3.5 overflow-hidden border border-slate-200">
+              <div id="helper-level-progress-bar" class="bg-gradient-to-r from-saffron-500 to-amber-500 h-full rounded-full transition-all duration-500" style="width: 72%;"></div>
+            </div>
+            <div class="flex justify-between text-[11px] font-semibold text-slate-500">
+              <span id="helper-progress-start-label">Level 3 (600 pts)</span>
+              <span id="helper-points-needed-label" class="text-saffron-700 font-bold">80 points to Level 4</span>
+              <span id="helper-progress-end-label">Level 4 (800 pts)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal Impact Statistics (Never Compared to Others) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center" id="helper-stats-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- INCOMING MATCHED REQUESTS FOR THIS HELPER -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-navy-900">Incoming Seva Requests</h2>
+            <p class="text-xs text-slate-500">Requests matching your skills, service mode, and availability.</p>
+          </div>
+          <button onclick="window.app.navigateTo('helper-requests')" class="text-xs font-bold text-saffron-700 hover:underline">
+            View All Requests →
+          </button>
+        </div>
+
+        <div id="helper-incoming-requests-list" class="space-y-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- ACTIVE ONGOING SESSIONS -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-navy-900">Active &amp; Scheduled Seva Sessions</h2>
+            <p class="text-xs text-slate-500">Directly connect with the person you are serving.</p>
+          </div>
+          <button onclick="window.app.navigateTo('helper-my-seva')" class="text-xs font-bold text-saffron-700 hover:underline">
+            Manage Sessions →
+          </button>
+        </div>
+
+        <div id="helper-active-sessions-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- QUICK HELPER ACTIONS -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="vs-card p-4 flex items-center space-x-3 cursor-pointer hover:border-saffron-400" onclick="window.app.navigateTo('achievements')">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg">
+            <i class="fas fa-award"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-navy-900">My Achievements</h4>
+            <p class="text-[11px] text-slate-500">Track milestones unlocked</p>
+          </div>
+        </div>
+
+        <div class="vs-card p-4 flex items-center space-x-3 cursor-pointer hover:border-saffron-400" onclick="window.app.navigateTo('certificates')">
+          <div class="w-10 h-10 rounded-xl bg-saffron-100 text-saffron-700 flex items-center justify-center font-bold text-lg">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-navy-900">Certificates of Service</h4>
+            <p class="text-[11px] text-slate-500">Download milestone certificates</p>
+          </div>
+        </div>
+
+        <div class="vs-card p-4 flex items-center space-x-3 cursor-pointer hover:border-saffron-400" onclick="window.app.openShareModal()">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg">
+            <i class="fas fa-share-nodes"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-navy-900">Spread Seva</h4>
+            <p class="text-[11px] text-slate-500">Share awareness &amp; earn +25 pts</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         4. NEEDER DASHBOARD (VIEW: needer-dashboard)
+         ---------------------------------------------------- -->
+    <section id="view-needer-dashboard" class="view-panel hidden py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <!-- Welcome Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <div>
+          <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">NEEDER DASHBOARD</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900" id="needer-welcome-title">Welcome, Sunita</h1>
+          <p class="text-xs text-slate-500 mt-1">We are here to support you with respect, dignity, and warmth.</p>
+        </div>
+
+        <!-- MAIN CTA: I NEED HELP -->
+        <button onclick="window.app.navigateTo('needer-find-help')" class="px-6 py-3 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center space-x-2">
+          <i class="fas fa-plus-circle text-base"></i>
+          <span>I NEED HELP</span>
+        </button>
+      </div>
+
+      <!-- THE 4 SERVICE CATEGORIES QUICK REQUEST CARDS -->
+      <div class="space-y-3">
+        <h2 class="text-lg font-bold text-navy-900">Choose a Service Category for Support</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="needer-categories-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- MY ACTIVE REQUESTS -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-navy-900">My Active Requests</h2>
+            <p class="text-xs text-slate-500">Ongoing help requests and matched volunteers.</p>
+          </div>
+          <button onclick="window.app.navigateTo('needer-my-requests')" class="text-xs font-bold text-saffron-700 hover:underline">
+            View All Requests →
+          </button>
+        </div>
+
+        <div id="needer-active-requests-list" class="space-y-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- PAST REQUESTS & SERVICE HISTORY SHORTCUT -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="vs-card p-5 flex items-center justify-between cursor-pointer hover:border-saffron-400" onclick="window.app.navigateTo('service-history')">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+              <i class="fas fa-clock-rotate-left"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-navy-900">Past Requests History</h4>
+              <p class="text-xs text-slate-500">Review completed assistance sessions</p>
+            </div>
+          </div>
+          <i class="fas fa-chevron-right text-slate-400"></i>
+        </div>
+
+        <div class="vs-card p-5 flex items-center justify-between cursor-pointer hover:border-saffron-400" onclick="window.app.navigateTo('help-support')">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+              <i class="fas fa-circle-question"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-navy-900">Help &amp; Support</h4>
+              <p class="text-xs text-slate-500">FAQs, safety guidelines, and assistance</p>
+            </div>
+          </div>
+          <i class="fas fa-chevron-right text-slate-400"></i>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         5. HELPER AVAILABILITY (VIEW: helper-availability)
+         ---------------------------------------------------- -->
+    <section id="view-helper-availability" class="view-panel hidden py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <div>
+          <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">AVAILABILITY SETTINGS</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">My Availability</h1>
+          <p class="text-xs text-slate-500 mt-1">Control when and how you provide Seva. Needers see your status safely without private data.</p>
+        </div>
+
+        <button onclick="window.app.openAddSlotModal()" class="px-4 py-2 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white text-xs font-bold transition-all flex items-center space-x-1.5 shadow-xs">
+          <i class="fas fa-plus"></i>
+          <span>Add Time Slot</span>
+        </button>
+      </div>
+
+      <!-- Master Status Controls Card -->
+      <div class="vs-card p-6 bg-white space-y-6">
+        <h3 class="text-base font-bold text-navy-900 border-b border-slate-100 pb-3">Status Toggles</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Toggle 1: Available Now -->
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-navy-900 block">Available Right Now</span>
+              <span class="text-[11px] text-slate-500">Respond to instant requests</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="toggle-avail-now" onchange="window.app.toggleHelperAvailability('now', this.checked)" class="sr-only peer">
+              <div class="w-11 h-6 bg-slate-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+            </label>
+          </div>
+
+          <!-- Toggle 2: Available Today -->
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-navy-900 block">Available Today</span>
+              <span class="text-[11px] text-slate-500">Have open slots today</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="toggle-avail-today" onchange="window.app.toggleHelperAvailability('today', this.checked)" class="sr-only peer">
+              <div class="w-11 h-6 bg-slate-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-saffron-600"></div>
+            </label>
+          </div>
+
+          <!-- Toggle 3: Pause Availability -->
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-navy-900 block">Pause Availability</span>
+              <span class="text-[11px] text-slate-500">Temporarily take a break</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="toggle-avail-pause" onchange="window.app.toggleHelperAvailability('pause', this.checked)" class="sr-only peer">
+              <div class="w-11 h-6 bg-slate-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly Schedule Days & Slots -->
+      <div class="vs-card p-6 bg-white space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="text-base font-bold text-navy-900">Weekly Schedule &amp; Slots</h3>
+            <p class="text-xs text-slate-500">Set recurring days and hours when you can offer Seva.</p>
+          </div>
+        </div>
+
+        <div id="availability-slots-container" class="space-y-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Privacy & Protection Note -->
+      <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start space-x-3">
+        <i class="fas fa-shield-halved text-saffron-700 text-base mt-0.5"></i>
+        <div>
+          <span class="font-bold">Privacy Guaranteed:</span>
+          <span> Your exact address, phone number, and personal contacts are strictly hidden. Needers only see your availability status (<span class="font-semibold">AVAILABLE NOW</span>, <span class="font-semibold">AVAILABLE LATER</span>, or <span class="font-semibold">NOT AVAILABLE</span>) and general locality.</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         6. HELPER REQUESTS (VIEW: helper-requests)
+         ---------------------------------------------------- -->
+    <section id="view-helper-requests" class="view-panel hidden py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <div>
+          <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">REQUEST MATCHES</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Seva Requests</h1>
+          <p class="text-xs text-slate-500 mt-1">Review requests from individuals seeking support in your areas of service.</p>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="flex flex-wrap gap-1.5 text-xs font-bold" id="helper-request-filter-tabs">
+          <button onclick="window.app.filterHelperRequests('all')" class="px-3 py-1.5 rounded-lg bg-saffron-600 text-white" data-filter="all">All</button>
+          <button onclick="window.app.filterHelperRequests('REQUESTED')" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200" data-filter="REQUESTED">Pending</button>
+          <button onclick="window.app.filterHelperRequests('ACCEPTED')" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200" data-filter="ACCEPTED">Accepted</button>
+          <button onclick="window.app.filterHelperRequests('SCHEDULED')" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200" data-filter="SCHEDULED">Scheduled</button>
+          <button onclick="window.app.filterHelperRequests('COMPLETED')" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200" data-filter="COMPLETED">Completed</button>
+        </div>
+      </div>
+
+      <!-- Requests List Container -->
+      <div id="helper-requests-full-list" class="space-y-4">
+        <!-- Populated dynamically -->
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         7. HELPER MY SEVA & SESSIONS (VIEW: helper-my-seva)
+         ---------------------------------------------------- -->
+    <section id="view-helper-my-seva" class="view-panel hidden py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">ACTIVE ENGAGEMENTS</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">My Seva Sessions</h1>
+        <p class="text-xs text-slate-500 mt-1">Connect with needers, conduct service sessions, and mark activities complete.</p>
+      </div>
+
+      <div id="helper-my-seva-sessions-list" class="space-y-4">
+        <!-- Populated dynamically -->
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         8. WHAT CHANGES IN YOU - FULL SIGNATURE VIEW (VIEW: what-changes-in-you)
+         ---------------------------------------------------- -->
+    <section id="view-what-changes-in-you" class="view-panel hidden py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <!-- Philosophy Banner -->
+      <div class="vs-card p-8 bg-gradient-to-br from-amber-500/10 via-saffron-500/10 to-transparent border-2 border-saffron-400 rounded-3xl text-center space-y-4 shadow-md">
+        <span class="px-3 py-1 rounded-full bg-saffron-600 text-white text-xs font-extrabold uppercase">
+          Signature VivekSeva Philosophy
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-navy-900 font-heading">
+          WHAT CHANGES IN YOU
+        </h1>
+        <p class="text-lg sm:text-xl font-serif-accent text-saffron-800 italic">
+          “Not your rank. Your growth.”
+        </p>
+        <p class="text-xs sm:text-sm text-slate-700 max-w-2xl mx-auto leading-relaxed">
+          The ultimate purpose of Seva is not simply to count how many people you have assisted. It is to observe: <strong>How has the journey of service transformed you?</strong> Your patience, humility, and inner strength are compared only against who you were yesterday.
+        </p>
+      </div>
+
+      <!-- 5-Level Sequential Progression Header -->
+      <div class="vs-card p-4 sm:p-5 bg-white border border-amber-200/80 rounded-2xl">
+        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2 text-center sm:text-left">
+          Qualitative Character Progression (Self-Improvement Only — No Comparison to Others)
+        </span>
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-navy-900">
+          <span class="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 flex items-center space-x-1.5">
+            <span>🌱</span>
+            <span>LEVEL 1 — Seva Beginner</span>
+          </span>
+          <i class="fas fa-arrow-right text-slate-400 hidden sm:inline"></i>
+          <span class="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex items-center space-x-1.5">
+            <span>🌿</span>
+            <span>LEVEL 2 — Active Helper</span>
+          </span>
+          <i class="fas fa-arrow-right text-slate-400 hidden sm:inline"></i>
+          <span class="px-3 py-1.5 rounded-xl bg-saffron-100 border border-saffron-300 text-saffron-900 flex items-center space-x-1.5">
+            <span>🌸</span>
+            <span>LEVEL 3 — Dedicated Helper</span>
+          </span>
+          <i class="fas fa-arrow-right text-slate-400 hidden sm:inline"></i>
+          <span class="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 flex items-center space-x-1.5">
+            <span>🌳</span>
+            <span>LEVEL 4 — Community Helper</span>
+          </span>
+          <i class="fas fa-arrow-right text-slate-400 hidden sm:inline"></i>
+          <span class="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 flex items-center space-x-1.5">
+            <span>🌟</span>
+            <span>LEVEL 5 — Seva Champion</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Before vs Milestones vs Next Level Comparison -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="wciy-milestone-cards-container">
+        <!-- Milestone 1: Level 1 -->
+        <div class="vs-card p-5 bg-slate-50 border border-slate-200 space-y-2">
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Level 1 Milestone</span>
+          <h3 class="text-sm sm:text-base font-bold text-navy-900 flex items-center space-x-1.5">
+            <span>🌱</span> <span>Level 1 — Seva Beginner</span>
+          </h3>
+          <div class="space-y-1 text-xs text-slate-600">
+            <p>• <strong>0 – 250</strong> Service Points</p>
+            <p>• Initial steps into unselfish action</p>
+          </div>
+          <span class="inline-block mt-2 px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold uppercase">Completed Foundation</span>
+        </div>
+
+        <!-- Milestone 2: Level 2 -->
+        <div class="vs-card p-5 bg-amber-50/60 border border-amber-200 space-y-2">
+          <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider">Level 2 Milestone</span>
+          <h3 class="text-sm sm:text-base font-bold text-navy-900 flex items-center space-x-1.5">
+            <span>🌿</span> <span>Level 2 — Active Helper</span>
+          </h3>
+          <div class="space-y-1 text-xs text-slate-600">
+            <p>• <strong>251 – 600</strong> Service Points</p>
+            <p>• Consistency &amp; empathy taking root</p>
+          </div>
+          <span class="inline-block mt-2 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase">Achieved Stage</span>
+        </div>
+
+        <!-- Milestone 3: Current Stage -->
+        <div class="vs-card p-5 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-saffron-400 space-y-2 shadow-md relative">
+          <div class="absolute -top-3 right-3 px-2 py-0.5 rounded-full bg-saffron-600 text-white text-[9px] font-extrabold uppercase">
+            Current Stage
+          </div>
+          <span class="text-[10px] font-bold text-saffron-800 uppercase tracking-wider">Where You Stand Today</span>
+          <h3 class="text-sm sm:text-base font-bold text-navy-900 flex items-center space-x-1.5" id="wciy-current-level">
+            <span>🌸</span> <span>Level 3 — Dedicated Helper</span>
+          </h3>
+          <div class="space-y-1 text-xs text-slate-700">
+            <p>• <strong id="wciy-current-points">720</strong> Points (<span id="wciy-current-services">18</span> Services)</p>
+            <p>• <strong id="wciy-current-hours">27</strong> Hours of Selfless Time</p>
+          </div>
+          <p class="text-[10px] text-saffron-800 font-semibold pt-1 border-t border-amber-200">Character &amp; consistency deepened</p>
+        </div>
+
+        <!-- Milestone 4: Next Horizon -->
+        <div class="vs-card p-5 bg-white border border-amber-200 space-y-2">
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Your Next Horizon</span>
+          <h3 class="text-sm sm:text-base font-bold text-navy-900 flex items-center space-x-1.5" id="wciy-next-level">
+            <span>🌳</span> <span>Level 4 — Community Helper</span>
+          </h3>
+          <div class="space-y-1 text-xs text-slate-600">
+            <p>• <strong id="wciy-remaining-points">80</strong> Points to Next Level</p>
+            <p>• Steady weekly service commitments</p>
+          </div>
+          <p class="text-[10px] text-slate-400 italic pt-1 border-t border-slate-200">Ever deeper self-purification</p>
+        </div>
+      </div>
+
+      <!-- Visual Personal Journey (Level 1 -> Level 2 -> Level 3 -> Level 4 -> Level 5) -->
+      <div class="vs-card p-6 sm:p-8 bg-white space-y-6">
+        <h3 class="text-lg font-bold text-navy-900">Visual Personal Growth Journey</h3>
+        <p class="text-xs text-slate-500 -mt-4">Every level represents qualitative character development through Seva.</p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4" id="wciy-levels-stepper">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Personal Impact Dimensions -->
+      <div class="vs-card p-6 sm:p-8 bg-white space-y-6">
+        <h3 class="text-lg font-bold text-navy-900">Your Impact Across Service Categories</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4" id="wciy-category-breakdown-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Personal Reflection Journal Notes -->
+      <div class="vs-card p-6 sm:p-8 bg-amber-50/40 border border-amber-200 space-y-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="text-base font-bold text-navy-900">Seva Reflection Journal</h3>
+            <p class="text-xs text-slate-500">Your personal insights and realizations gained through serving.</p>
+          </div>
+        </div>
+
+        <div id="wciy-reflections-container" class="space-y-3">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Add reflection box -->
+        <div class="pt-3 border-t border-amber-200/70 flex gap-2">
+          <input type="text" id="input-new-reflection" placeholder="Record a quiet reflection on today's service..." class="flex-1 px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-hidden focus:border-saffron-500">
+          <button onclick="window.app.addPersonalReflection()" class="px-4 py-2 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white text-xs font-bold transition-colors">
+            Record Reflection
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         9. ACHIEVEMENTS (VIEW: achievements)
+         ---------------------------------------------------- -->
+    <section id="view-achievements" class="view-panel hidden py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">CHARACTER MILESTONES</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Seva Achievements</h1>
+          <p class="text-xs text-slate-500 mt-1">Milestones unlocked through genuine acts of service and consistency.</p>
+        </div>
+        <div class="text-right">
+          <span class="text-xs font-bold text-slate-500 block">Total Unlocked</span>
+          <span class="text-xl font-extrabold text-saffron-600" id="achievements-unlocked-count">7 / 10</span>
+        </div>
+      </div>
+
+      <!-- Achievements Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="achievements-master-grid">
+        <!-- Populated dynamically -->
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         10. CERTIFICATES (VIEW: certificates)
+         ---------------------------------------------------- -->
+    <section id="view-certificates" class="view-panel hidden py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">RECOGNITION OF SEVA</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Certificates of Service</h1>
+        <p class="text-xs text-slate-500 mt-1">Generated milestone certificates celebrating your selfless contributions.</p>
+        <p class="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg mt-2 inline-block">
+          <i class="fas fa-info-circle mr-1"></i> These are non-governmental certificates of appreciation issued by the VivekSeva platform.
+        </p>
+      </div>
+
+      <!-- Certificates List -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="certificates-list-grid">
+        <!-- Populated dynamically -->
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         11. NEEDER CREATE NEED WIZARD & AI MATCHING (VIEW: needer-find-help)
+         ---------------------------------------------------- -->
+    <section id="view-needer-find-help" class="view-panel hidden py-8 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">REQUEST ASSISTANCE</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">I Need Help</h1>
+        <p class="text-xs text-slate-500 mt-1">Choose a category and describe what you need. Our AI matching will find suitable registered helpers.</p>
+      </div>
+
+      <!-- Wizard Form Container -->
+      <div class="vs-card p-6 sm:p-8 bg-white space-y-6">
+        
+        <!-- Step 1: Category Selection -->
+        <div class="space-y-3">
+          <label class="text-xs font-bold text-navy-900 uppercase tracking-wider block">1. Select Service Category *</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="need-wizard-category-selection">
+            <!-- Dynamically populated 4 categories -->
+          </div>
+        </div>
+
+        <!-- Step 2: Dynamic Category-Specific Fields -->
+        <div id="need-wizard-dynamic-category-fields" class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-4">
+          <!-- Populated dynamically on category click -->
+        </div>
+
+        <!-- Step 3: Common Fields -->
+        <div class="space-y-4 pt-2 border-t border-slate-100">
+          <h4 class="text-xs font-bold text-navy-900 uppercase tracking-wider">2. Service Details</h4>
+          
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Describe What You Need *</label>
+            <textarea id="need-input-description" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-saffron-500 focus:outline-hidden" placeholder="Please describe clearly what kind of assistance will help you most..."></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Preferred Date *</label>
+              <input type="date" id="need-input-date" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Preferred Time *</label>
+              <input type="text" id="need-input-time" placeholder="e.g. 10:00 AM - 12:00 PM" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Approximate Duration *</label>
+              <select id="need-input-duration" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+                <option value="1 hour">1 hour</option>
+                <option value="1.5 hours">1.5 hours</option>
+                <option value="2 hours">2 hours</option>
+                <option value="3 hours">3 hours</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Service Mode *</label>
+              <select id="need-input-mode" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+                <option value="OFFLINE">Offline (In-Person)</option>
+                <option value="ONLINE">Online (Virtual / Remote)</option>
+                <option value="BOTH">Flexible (Either Online or Offline)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Approximate Location *</label>
+              <input type="text" id="need-input-location" placeholder="e.g. Dashashwamedh, Varanasi" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+            </div>
+          </div>
+        </div>
+
+        <!-- Submission / Trigger AI Matching -->
+        <div class="pt-4 border-t border-slate-100 flex justify-end space-x-3">
+          <button onclick="window.app.navigateTo('needer-dashboard')" class="px-5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 hover:bg-slate-50">
+            Cancel
+          </button>
+          <button onclick="window.app.submitNeedRequestAndMatch()" class="px-7 py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white text-xs font-bold shadow-md flex items-center space-x-2">
+            <i class="fas fa-sparkles"></i>
+            <span>FIND A HELPER</span>
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         12. AI MATCHING RESULTS (VIEW: ai-matching-results)
+         ---------------------------------------------------- -->
+    <section id="view-ai-matching-results" class="view-panel hidden py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">AI MATCHING RESULTS</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Your Seva Matches</h1>
+          <p class="text-xs text-slate-500 mt-1">We evaluated category, skills, availability, preferred time, mode, and profile suitability.</p>
+        </div>
+        <button onclick="window.app.navigateTo('needer-find-help')" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50">
+          Modify Need Criteria
+        </button>
+      </div>
+
+      <!-- Helper Matches Cards Grid -->
+      <div id="ai-matches-cards-container" class="space-y-4">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Fallback / No Match Options -->
+      <div id="ai-matches-fallback-card" class="hidden vs-card p-8 text-center space-y-4 bg-amber-50/50 border border-amber-200">
+        <div class="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xl">
+          <i class="fas fa-magnifying-glass"></i>
+        </div>
+        <h3 class="text-lg font-bold text-navy-900">We couldn't find a suitable match right now</h3>
+        <p class="text-xs text-slate-600 max-w-md mx-auto">
+          Please adjust your timing, service mode, or check back shortly as more volunteers update their availability.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3 pt-2">
+          <button onclick="window.app.navigateTo('needer-find-help')" class="px-4 py-2 rounded-xl bg-saffron-600 text-white text-xs font-bold">
+            Change Time &amp; Mode
+          </button>
+          <button onclick="window.app.navigateTo('help-support')" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold">
+            Contact Support
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         13. NEEDER MY REQUESTS (VIEW: needer-my-requests)
+         ---------------------------------------------------- -->
+    <section id="view-needer-my-requests" class="view-panel hidden py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <div>
+          <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">REQUEST TRACKING</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">My Support Requests</h1>
+          <p class="text-xs text-slate-500 mt-1">Track request progress, message your helper, and confirm completion.</p>
+        </div>
+        <button onclick="window.app.navigateTo('needer-find-help')" class="px-4 py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white text-xs font-bold shadow-xs">
+          + Create New Request
+        </button>
+      </div>
+
+      <div id="needer-my-requests-full-list" class="space-y-4">
+        <!-- Populated dynamically -->
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         14. SERVICE HISTORY (VIEW: service-history)
+         ---------------------------------------------------- -->
+    <section id="view-service-history" class="view-panel hidden py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">HISTORICAL LOG</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Service History</h1>
+        <p class="text-xs text-slate-500 mt-1">Full record of past completed services, points earned, and exchange feedback.</p>
+      </div>
+
+      <div id="service-history-list" class="space-y-4">
+        <!-- Populated dynamically -->
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         15. COMMUNITIES & NGOs DIRECTORY (VIEW: ngos)
+         ---------------------------------------------------- -->
+    <section id="view-ngos" class="view-panel hidden py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">COLLABORATION</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Communities &amp; NGOs</h1>
+        <p class="text-xs text-slate-500 mt-1">Partner organizations that coordinate larger food, educational, and elderly seva initiatives.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="ngos-directory-list">
+        <!-- Populated dynamically -->
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         16. HELP & SUPPORT (VIEW: help-support)
+         ---------------------------------------------------- -->
+    <section id="view-help-support" class="view-panel hidden py-8 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <div class="bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs">
+        <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">ASSISTANCE &amp; SAFETY</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Help &amp; Support</h1>
+        <p class="text-xs text-slate-500 mt-1">Frequently asked questions, non-medical guidelines, safety charters, and direct problem reporting.</p>
+      </div>
+
+      <!-- FAQs Accordion -->
+      <div class="vs-card p-6 bg-white space-y-4">
+        <h3 class="text-base font-bold text-navy-900">Frequently Asked Questions</h3>
+        <div class="space-y-3" id="help-faqs-container">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Report a problem direct trigger -->
+      <div class="vs-card p-6 bg-amber-50/60 border border-amber-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h4 class="text-sm font-bold text-navy-900">Encountered an issue or have a safety concern?</h4>
+          <p class="text-xs text-slate-600">You can submit a confidential problem report to platform moderators at any time.</p>
+        </div>
+        <button onclick="window.app.openReportProblemModal()" class="px-4 py-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold shrink-0">
+          Report a Problem
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------
+         17. MY PROFILE (VIEW: profile)
+         ---------------------------------------------------- -->
+    <section id="view-profile" class="view-panel hidden py-8 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <div class="bg-white p-6 rounded-2xl border border-amber-200/70 shadow-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex items-center space-x-4">
+          <img id="profile-display-avatar" src="" alt="Profile Photo" class="w-16 h-16 rounded-2xl object-cover border-2 border-saffron-300 shadow-sm">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-navy-900" id="profile-display-name">Name</h1>
+            <p class="text-xs text-slate-500" id="profile-display-location">Location</p>
+            <span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-100 text-saffron-800" id="profile-display-role-badge">Role</span>
+          </div>
+        </div>
+
+        <button onclick="window.app.openEditProfileModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50">
+          <i class="fas fa-pen-to-square mr-1"></i> Edit Profile
+        </button>
+      </div>
+
+      <!-- Profile Details Card -->
+      <div class="vs-card p-6 bg-white space-y-6" id="profile-details-content">
+        <!-- Populated dynamically -->
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================================
+       FOOTER (Section 35)
+       ======================================================== -->
+  <footer class="bg-navy-950 text-slate-300 py-12 border-t border-amber-900/40 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-hands-holding-heart text-saffron-500 text-xl"></i>
+            <span class="text-lg font-extrabold tracking-tight text-white font-heading">Vivek<span class="text-saffron-500">Seva</span></span>
+          </div>
+          <p class="text-amber-200/80 font-serif-accent italic text-sm mt-1">“Serve. Connect. Grow.”</p>
+          <p class="text-[11px] text-slate-400 mt-2">Inspired by the ideals of Swami Vivekananda.</p>
+        </div>
+
+        <div class="flex flex-wrap gap-6 text-xs font-semibold text-slate-400">
+          <button onclick="window.app.navigateTo('landing')" class="hover:text-amber-400">Home</button>
+          <button onclick="window.app.navigateTo('seva-categories')" class="hover:text-amber-400">Seva Categories</button>
+          <button onclick="window.app.navigateTo('about')" class="hover:text-amber-400">About</button>
+          <button onclick="window.app.navigateTo('ngos')" class="hover:text-amber-400">Communities &amp; NGOs</button>
+          <button onclick="window.app.navigateTo('help-support')" class="hover:text-amber-400">Help &amp; Support</button>
+          <button onclick="window.app.openReportProblemModal()" class="hover:text-amber-400">Report a Problem</button>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-slate-800 text-[11px] text-slate-500 flex flex-col sm:flex-row justify-between gap-2">
+        <p>© 2026 VivekSeva. Dedicated to the dignity of every human being and the joy of selfless service.</p>
+        <p>Technology connects. Humanity serves. Character grows.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================
+       MOBILE BOTTOM NAVIGATION (Section 45)
+       ======================================================== -->
+  <nav class="mobile-bottom-nav lg:hidden py-2 px-3 flex justify-around items-center text-[10px] font-bold text-slate-600">
+    <button onclick="window.app.navigateToHomeDashboard()" class="flex flex-col items-center hover:text-saffron-600">
+      <i class="fas fa-house text-base mb-0.5"></i>
+      <span>Home</span>
+    </button>
+    <button onclick="window.app.navigateToRequests()" class="flex flex-col items-center hover:text-saffron-600">
+      <i class="fas fa-list-check text-base mb-0.5"></i>
+      <span>Requests</span>
+    </button>
+    <button onclick="window.app.navigateTo('what-changes-in-you')" class="flex flex-col items-center hover:text-saffron-600">
+      <i class="fas fa-seedling text-base mb-0.5 text-saffron-600"></i>
+      <span class="text-saffron-700">Growth</span>
+    </button>
+    <button onclick="window.app.navigateTo('profile')" class="flex flex-col items-center hover:text-saffron-600">
+      <i class="fas fa-user text-base mb-0.5"></i>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================
+       MODALS CONTAINER
+       ======================================================== -->
+
+  <!-- 1. LOGIN MODAL -->
+  <div id="modal-login" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl border border-amber-200">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="text-lg font-bold text-navy-900">Login to VivekSeva</h3>
+        <button onclick="window.app.closeModal('modal-login')" class="text-slate-400 hover:text-slate-600">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="window.app.handleLoginForm(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email or Phone Number</label>
+          <input type="text" id="login-email" required placeholder="name@example.org" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+        </div>
+
+        <div class="flex justify-between items-center text-xs">
+          <button type="button" onclick="window.app.openForgotPasswordModal()" class="text-saffron-700 hover:underline font-semibold">Forgot Password?</button>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs transition-all shadow-md">
+          LOGIN
+        </button>
+      </form>
+
+      <div class="pt-3 border-t border-slate-100 text-center text-xs text-slate-600">
+        Don’t have an account? 
+        <button onclick="window.app.closeModal('modal-login'); window.app.openSignUpModal()" class="text-saffron-700 font-bold hover:underline">SIGN UP</button>
+      </div>
+
+      <!-- Quick 1-Click Demo Logins -->
+      <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs space-y-2">
+        <span class="font-bold text-saffron-800 block text-[11px] uppercase">1-Click Demo Profiles:</span>
+        <div class="grid grid-cols-3 gap-1.5 text-center">
+          <button onclick="window.app.quickLogin('usr_helper_arjun')" class="px-2 py-1 bg-white rounded border border-amber-300 font-semibold text-slate-700 hover:bg-saffron-100">Arjun (Helper)</button>
+          <button onclick="window.app.quickLogin('usr_needer_sunita')" class="px-2 py-1 bg-white rounded border border-amber-300 font-semibold text-slate-700 hover:bg-blue-100">Sunita (Needer)</button>
+          <button onclick="window.app.quickLogin('usr_dual_priya')" class="px-2 py-1 bg-white rounded border border-amber-300 font-semibold text-slate-700 hover:bg-purple-100">Priya (Both)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SIGN UP MODAL (Section 6) -->
+  <div id="modal-signup" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-amber-200 my-8">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="text-lg font-bold text-navy-900">Create Your VivekSeva Account</h3>
+        <button onclick="window.app.closeModal('modal-signup')" class="text-slate-400 hover:text-slate-600">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="window.app.handleSignUpForm(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Full Name *</label>
+          <input type="text" id="signup-name" required placeholder="e.g. Ramesh Chandra" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Email *</label>
+            <input type="email" id="signup-email" required placeholder="ramesh@example.org" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Phone Number *</label>
+            <input type="tel" id="signup-phone" required placeholder="+91 98765 00000" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Password *</label>
+            <input type="password" id="signup-password" required placeholder="••••••••" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Confirm Password *</label>
+            <input type="password" id="signup-confirm-password" required placeholder="••••••••" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">General Location (City / Area) *</label>
+          <input type="text" id="signup-location" required placeholder="e.g. Varanasi, Uttar Pradesh" class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+        </div>
+
+        <!-- Role Participation Choice -->
+        <div class="pt-2">
+          <label class="block font-bold text-navy-900 mb-1.5 uppercase text-[11px] tracking-wider">How would you like to participate? *</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="p-2.5 rounded-xl border border-slate-200 text-center cursor-pointer hover:border-saffron-400 has-checked:border-saffron-600 has-checked:bg-saffron-50">
+              <input type="radio" name="signup-role" value="helper" checked class="hidden">
+              <i class="fas fa-hand-holding-heart text-saffron-600 block mb-1"></i>
+              <span class="font-bold block">I WANT TO HELP</span>
+            </label>
+            <label class="p-2.5 rounded-xl border border-slate-200 text-center cursor-pointer hover:border-blue-400 has-checked:border-blue-600 has-checked:bg-blue-50">
+              <input type="radio" name="signup-role" value="needer" class="hidden">
+              <i class="fas fa-hands-praying text-blue-600 block mb-1"></i>
+              <span class="font-bold block">I NEED HELP</span>
+            </label>
+            <label class="p-2.5 rounded-xl border border-slate-200 text-center cursor-pointer hover:border-purple-400 has-checked:border-purple-600 has-checked:bg-purple-50">
+              <input type="radio" name="signup-role" value="both" class="hidden">
+              <i class="fas fa-repeat text-purple-600 block mb-1"></i>
+              <span class="font-bold block">BOTH</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs transition-all shadow-md mt-2">
+          REGISTER &amp; BEGIN
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. WELCOME SCREEN MODAL (Section 6) -->
+  <div id="modal-welcome" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center space-y-4 shadow-2xl border border-amber-200">
+      <div class="w-16 h-16 rounded-full bg-saffron-100 text-saffron-600 flex items-center justify-center text-3xl mx-auto">
+        <i class="fas fa-hands-holding-heart"></i>
+      </div>
+      <h3 class="text-2xl font-extrabold text-navy-900 font-heading">Welcome to VivekSeva.</h3>
+      <p class="text-xs text-slate-600 leading-relaxed" id="welcome-modal-subtext">
+        Your account is created. Together, we translate the timeless ideal of Seva into compassionate action.
+      </p>
+      <button onclick="window.app.proceedAfterWelcome()" class="w-full py-3 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs shadow-md">
+        Continue to Onboarding →
+      </button>
+    </div>
+  </div>
+
+  <!-- 4. HELPER ONBOARDING WIZARD MODAL (Section 8) -->
+  <div id="modal-helper-onboarding" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl border border-amber-200 my-8">
+      <div class="border-b border-slate-100 pb-3">
+        <span class="text-xs font-bold text-saffron-700 uppercase tracking-wider">ONBOARDING</span>
+        <h3 class="text-xl font-bold text-navy-900">Begin Your Seva Journey</h3>
+        <p class="text-xs text-slate-500">Configure your seva preferences, dynamic skills, and availability slots.</p>
+      </div>
+
+      <div class="space-y-5 text-xs">
+        <!-- Step 1: Categories -->
+        <div class="space-y-2">
+          <label class="font-bold text-navy-900 uppercase tracking-wider block">Step 1: Choose Categories You Can Help With *</label>
+          <div class="grid grid-cols-2 gap-2" id="onboarding-categories-container">
+            <!-- Dynamically populated 4 categories checkboxes -->
+          </div>
+        </div>
+
+        <!-- Step 2: Dynamic Skills -->
+        <div class="space-y-2">
+          <label class="font-bold text-navy-900 uppercase tracking-wider block">Step 2: Choose Specific Skills &amp; Services *</label>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 max-h-40 overflow-y-auto" id="onboarding-skills-container">
+            <!-- Dynamically changes with category checkboxes -->
+          </div>
+        </div>
+
+        <!-- Step 3: Availability -->
+        <div class="space-y-2">
+          <label class="font-bold text-navy-900 uppercase tracking-wider block">Step 3: Set Availability *</label>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-600 block mb-1">Available Today?</span>
+              <select id="onboarding-avail-today" class="w-full px-3 py-1.5 rounded-lg border border-slate-300">
+                <option value="yes">YES</option>
+                <option value="no">NO</option>
+              </select>
+            </div>
+            <div>
+              <span class="text-[11px] font-semibold text-slate-600 block mb-1">Preferred Time Window</span>
+              <input type="text" id="onboarding-time-slot" placeholder="e.g. 6:00 PM – 8:00 PM" class="w-full px-3 py-1.5 rounded-lg border border-slate-300">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Service Mode -->
+        <div class="space-y-2">
+          <label class="font-bold text-navy-900 uppercase tracking-wider block">Step 4: Service Mode *</label>
+          <select id="onboarding-service-mode" class="w-full px-3 py-2 rounded-lg border border-slate-300 font-semibold">
+            <option value="BOTH">BOTH (Online &amp; Offline)</option>
+            <option value="OFFLINE">OFFLINE (In-Person Only)</option>
+            <option value="ONLINE">ONLINE (Remote / Virtual Only)</option>
+          </select>
+        </div>
+
+        <!-- Step 5: Short Intro -->
+        <div class="space-y-2">
+          <label class="font-bold text-navy-900 uppercase tracking-wider block">Step 5: Short Introduction *</label>
+          <textarea id="onboarding-intro" rows="2" placeholder="Tell people what kind of help you can provide with warmth and respect..." class="w-full px-3 py-2 rounded-xl border border-slate-300"></textarea>
+        </div>
+
+        <button onclick="window.app.completeHelperOnboarding()" class="w-full py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs transition-all shadow-md">
+          FINISH ONBOARDING &amp; ENTER DASHBOARD
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. IN-APP CHAT MODAL (Section 17) -->
+  <div id="modal-chat" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full h-[580px] flex flex-col shadow-2xl border border-amber-200 overflow-hidden">
+      <!-- Chat Header -->
+      <div class="p-3.5 bg-slate-900 text-white flex justify-between items-center">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 rounded-full bg-saffron-600 text-white flex items-center justify-center font-bold text-xs" id="chat-header-avatar">
+            A
+          </div>
+          <div>
+            <h4 class="text-xs font-bold leading-tight" id="chat-header-name">Conversation Partner</h4>
+            <p class="text-[10px] text-amber-200/80">In-App Private Message • Phone Masked</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="window.app.startPrivateCallFromCurrentChat()" class="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs" title="Start Private Call">
+            <i class="fas fa-phone"></i>
+          </button>
+          <button onclick="window.app.closeModal('modal-chat')" class="text-slate-400 hover:text-white">
+            <i class="fas fa-times text-base"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages History Area -->
+      <div id="chat-messages-scroll-area" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Quick Reply Templates -->
+      <div class="px-3 py-1.5 bg-white border-t border-slate-100 flex gap-1.5 overflow-x-auto text-[10px]">
+        <button onclick="window.app.sendQuickReply('Namaste! I am ready to help.')" class="px-2 py-1 rounded-full bg-amber-50 text-saffron-800 border border-amber-200 whitespace-nowrap hover:bg-amber-100">Namaste! Ready to help</button>
+        <button onclick="window.app.sendQuickReply('What time works best for you?')" class="px-2 py-1 rounded-full bg-amber-50 text-saffron-800 border border-amber-200 whitespace-nowrap hover:bg-amber-100">What time works best?</button>
+        <button onclick="window.app.sendQuickReply('I am on the way.')" class="px-2 py-1 rounded-full bg-amber-50 text-saffron-800 border border-amber-200 whitespace-nowrap hover:bg-amber-100">I am on the way</button>
+        <button onclick="window.app.sendQuickReply('Thank you for the guidance!')" class="px-2 py-1 rounded-full bg-amber-50 text-saffron-800 border border-amber-200 whitespace-nowrap hover:bg-amber-100">Thank you!</button>
+      </div>
+
+      <!-- Input Bar -->
+      <form onsubmit="window.app.handleSendMessage(event)" class="p-3 bg-white border-t border-slate-200 flex gap-2">
+        <input type="text" id="chat-input-text" placeholder="Type a respectful message..." class="flex-1 px-3 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-saffron-500 focus:outline-hidden">
+        <button type="submit" class="px-4 py-2 bg-saffron-600 hover:bg-saffron-700 text-white rounded-xl text-xs font-bold transition-colors">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. IN-APP PRIVATE CALL MODAL (Section 18) -->
+  <div id="modal-private-call" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4">
+    <div class="bg-navy-950 text-white rounded-3xl max-w-sm w-full p-8 text-center space-y-6 shadow-2xl border border-amber-900/60">
+      <div class="space-y-1">
+        <span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase">Platform-Mediated Call</span>
+        <h3 class="text-xl font-bold" id="call-partner-name">Partner Name</h3>
+        <p class="text-xs text-slate-400" id="call-status-label">Calling...</p>
+      </div>
+
+      <!-- Pulse Avatar -->
+      <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-saffron-600 to-amber-500 flex items-center justify-center text-4xl shadow-xl call-pulse-avatar" id="call-partner-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+
+      <!-- Timer -->
+      <div class="text-base font-mono font-bold text-amber-300" id="call-timer-display">
+        00:00
+      </div>
+
+      <!-- Privacy Notice Banner -->
+      <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-[10px] text-slate-400">
+        <i class="fas fa-shield-halved text-emerald-400 mr-1"></i>
+        <span>Neither personal phone number is disclosed.</span>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex justify-center space-x-6 pt-2">
+        <button onclick="window.app.toggleCallMute()" id="btn-call-mute" class="w-12 h-12 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center text-lg transition-colors" title="Mute Microphone">
+          <i class="fas fa-microphone"></i>
+        </button>
+        <button onclick="window.app.toggleCallSpeaker()" id="btn-call-speaker" class="w-12 h-12 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center text-lg transition-colors" title="Speaker">
+          <i class="fas fa-volume-high"></i>
+        </button>
+        <button onclick="window.app.endPrivateCall()" class="w-12 h-12 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-lg transition-colors shadow-lg" title="End Call">
+          <i class="fas fa-phone-slash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. FINAL SERVICE COMPLETION SCREEN (Section 42) -->
+  <div id="modal-completion-screen" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-8 text-center space-y-5 shadow-2xl border-2 border-saffron-300">
+      <div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-4xl shadow-inner border border-emerald-300">
+        <i class="fas fa-circle-check"></i>
+      </div>
+
+      <div class="space-y-1">
+        <span class="text-xs font-bold text-saffron-700 uppercase tracking-widest">SEVA COMPLETED</span>
+        <h2 class="text-3xl font-extrabold text-navy-900 font-heading">You Served. You Grew.</h2>
+        <p class="text-xs text-slate-600" id="completion-summary-text">
+          Another meaningful act of service completed with human dignity.
+        </p>
+      </div>
+
+      <!-- Impact & Points Earned Card -->
+      <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-xs text-slate-700 space-y-2">
+        <div class="flex justify-between font-bold">
+          <span>Base Service Points:</span>
+          <span class="text-saffron-700">+100 Points</span>
+        </div>
+        <div class="flex justify-between font-bold">
+          <span>Dedication Bonus:</span>
+          <span class="text-saffron-700">+20 Points</span>
+        </div>
+        <div class="border-t border-amber-200 pt-2 flex justify-between font-extrabold text-navy-900 text-sm">
+          <span>Total Points Earned:</span>
+          <span class="text-saffron-600" id="completion-points-total">+120 Points</span>
+        </div>
+      </div>
+
+      <!-- "WHAT CHANGES IN YOU" PREVIEW -->
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 text-left space-y-1">
+        <span class="font-bold text-navy-900 block uppercase">What Changes In You:</span>
+        <p id="completion-growth-note">• Your patience and consistency deepened. Level progress updated.</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button onclick="window.app.openFeedbackModalFromCompletion()" class="flex-1 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-bold text-xs transition-colors">
+          Leave Service Feedback
+        </button>
+        <button onclick="window.app.closeModal('modal-completion-screen'); window.app.navigateToHomeDashboard()" class="flex-1 py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs transition-colors">
+          CONTINUE YOUR SEVA
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. TWO-WAY FEEDBACK MODAL (Section 21) -->
+  <div id="modal-feedback" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-amber-200 my-8 text-xs">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+          <span class="text-[10px] font-bold text-saffron-700 uppercase">SERVICE FEEDBACK</span>
+          <h3 class="text-base font-bold text-navy-900" id="feedback-modal-title">Share Your Experience</h3>
+        </div>
+        <button onclick="window.app.closeModal('modal-feedback')" class="text-slate-400 hover:text-slate-600">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="window.app.handleSubmitFeedback(event)" class="space-y-4">
+        <!-- Star Rating -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Overall Experience Rating *</label>
+          <div class="flex space-x-2 text-2xl text-amber-400 cursor-pointer" id="feedback-stars-container">
+            <i class="fas fa-star" onclick="window.app.setFeedbackStars(1)"></i>
+            <i class="fas fa-star" onclick="window.app.setFeedbackStars(2)"></i>
+            <i class="fas fa-star" onclick="window.app.setFeedbackStars(3)"></i>
+            <i class="fas fa-star" onclick="window.app.setFeedbackStars(4)"></i>
+            <i class="fas fa-star" onclick="window.app.setFeedbackStars(5)"></i>
+          </div>
+        </div>
+
+        <!-- 4 Structured Questions -->
+        <div class="space-y-3 pt-2 border-t border-slate-100">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">1. Was the communication clear?</label>
+            <select id="fb-q1" class="w-full px-3 py-1.5 rounded-lg border border-slate-300">
+              <option value="Yes, perfectly clear">Yes, perfectly clear</option>
+              <option value="Somewhat clear">Somewhat clear</option>
+              <option value="Could be improved">Could be improved</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">2. Was the service completed?</label>
+            <select id="fb-q2" class="w-full px-3 py-1.5 rounded-lg border border-slate-300">
+              <option value="Yes, fully completed">Yes, fully completed</option>
+              <option value="Partially completed">Partially completed</option>
+              <option value="No, not completed">No, not completed</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">3. Was the interaction respectful?</label>
+            <select id="fb-q3" class="w-full px-3 py-1.5 rounded-lg border border-slate-300">
+              <option value="Extremely respectful and kind">Extremely respectful and kind</option>
+              <option value="Respectful">Respectful</option>
+              <option value="Needs improvement">Needs improvement</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">4. Was the need fulfilled?</label>
+            <select id="fb-q4" class="w-full px-3 py-1.5 rounded-lg border border-slate-300">
+              <option value="Yes, completely fulfilled">Yes, completely fulfilled</option>
+              <option value="Partially fulfilled">Partially fulfilled</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Written feedback -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Written Feedback</label>
+          <textarea id="fb-written-text" rows="3" placeholder="Share a few kind words about the service..." class="w-full px-3 py-2 rounded-xl border border-slate-300"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs transition-colors">
+          Submit Feedback
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 9. REPORT A PROBLEM MODAL (Section 20) -->
+  <div id="modal-report-problem" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-amber-200 text-xs">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-navy-900">Report a Problem</h3>
+        <button onclick="window.app.closeModal('modal-report-problem')" class="text-slate-400 hover:text-slate-600">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="window.app.handleSubmitReport(event)" class="space-y-3.5">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Category *</label>
+          <select id="report-category" required class="w-full px-3 py-2 rounded-xl border border-slate-300">
+            <option value="Safety Concern">Safety Concern</option>
+            <option value="Inappropriate Behaviour">Inappropriate Behaviour</option>
+            <option value="Service Not Provided">Service Not Provided</option>
+            <option value="Miscommunication">Miscommunication</option>
+            <option value="Technical Issue">Technical Issue</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Describe the Problem *</label>
+          <textarea id="report-description" rows="4" required placeholder="Please provide details. This will be reviewed privately by platform support." class="w-full px-3 py-2 rounded-xl border border-slate-300"></textarea>
+        </div>
+
+        <p class="text-[11px] text-slate-500 italic">
+          Never exposed to the other party. Stored strictly under administrative review.
+        </p>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-colors">
+          Submit Confidential Report
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 10. SPREAD SEVA / SHARE MODAL (Section 28) -->
+  <div id="modal-share-seva" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl border border-amber-200">
+      <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xl mx-auto">
+        <i class="fas fa-share-nodes"></i>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-navy-900">SPREAD THE SPIRIT OF SEVA</h3>
+        <p class="text-xs text-slate-600 mt-1">
+          Share VivekSeva with friends, families, and communities. Help more people give and receive support.
+        </p>
+      </div>
+
+      <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs font-semibold text-saffron-800">
+        Earn <span class="font-extrabold text-saffron-600">+25 Service Points</span> for spreading awareness! (Awarded once per day)
+      </div>
+
+      <!-- Share Buttons -->
+      <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-bold">
+        <button onclick="window.app.executeShare('whatsapp')" class="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center space-x-2">
+          <i class="fab fa-whatsapp text-base"></i>
+          <span>WhatsApp</span>
+        </button>
+        <button onclick="window.app.executeShare('twitter')" class="p-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white flex items-center justify-center space-x-2">
+          <i class="fab fa-x-twitter text-base"></i>
+          <span>Twitter / X</span>
+        </button>
+        <button onclick="window.app.executeShare('linkedin')" class="p-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white flex items-center justify-center space-x-2">
+          <i class="fab fa-linkedin text-base"></i>
+          <span>LinkedIn</span>
+        </button>
+        <button onclick="window.app.executeShare('copy')" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center space-x-2">
+          <i class="fas fa-copy text-base"></i>
+          <span>Copy Link</span>
+        </button>
+      </div>
+
+      <button onclick="window.app.closeModal('modal-share-seva')" class="text-xs text-slate-400 hover:underline pt-2">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <!-- 11. PRINTABLE CERTIFICATE VIEW MODAL (Section 26) -->
+  <div id="modal-certificate" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl my-8">
+      <div class="flex justify-between items-center no-print">
+        <span class="text-xs font-bold text-saffron-700 uppercase">CERTIFICATE PREVIEW</span>
+        <div class="flex space-x-2">
+          <button onclick="window.print()" class="px-3 py-1.5 bg-saffron-600 text-white text-xs font-bold rounded-lg hover:bg-saffron-700">
+            <i class="fas fa-print mr-1"></i> Print / Save PDF
+          </button>
+          <button onclick="window.app.closeModal('modal-certificate')" class="text-slate-400 hover:text-slate-600 px-2 py-1">
+            <i class="fas fa-times text-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Certificate Canvas -->
+      <div id="certificate-print-area" class="certificate-frame p-8 sm:p-12 text-center text-navy-900 rounded-xl relative">
+        <div class="certificate-inner-border p-6 sm:p-8 space-y-6">
+          
+          <div class="space-y-1">
+            <div class="w-12 h-12 mx-auto text-amber-700 text-3xl">
+              <i class="fas fa-om"></i>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading tracking-widest text-amber-800">VIVEKSEVA</h2>
+            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Platform of Human Service &amp; Character Growth</p>
+          </div>
+
+          <div class="space-y-1">
+            <p class="text-xs text-slate-500 uppercase tracking-widest">This Certificate is Proudly Presented To</p>
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-navy-900 font-serif-accent border-b-2 border-amber-300 pb-2 max-w-md mx-auto" id="cert-helper-name">
+              Arjun Sharma
+            </h1>
+          </div>
+
+          <div class="space-y-2 max-w-xl mx-auto text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <p id="cert-title-badge" class="font-bold text-amber-900 text-base">Certificate of Dedicated Seva</p>
+            <p id="cert-contribution-text">
+              For completing 10 community seva sessions with humility, dignity and exemplary commitment.
+            </p>
+          </div>
+
+          <!-- Bottom Info / Seal -->
+          <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-left text-xs text-slate-600 border-t border-amber-200">
+            <div>
+              <p><strong>Date:</strong> <span id="cert-date-text">2026-10-06</span></p>
+              <p><strong>Certificate ID:</strong> <span id="cert-id-text" class="font-mono">VS-CERT-2026-0104</span></p>
+            </div>
+
+            <div class="certificate-gold-seal">
+              <i class="fas fa-award text-3xl"></i>
+            </div>
+
+            <div class="text-right">
+              <p class="font-serif-accent italic text-amber-900 text-sm">“Serve with dignity.”</p>
+              <p class="font-semibold text-slate-500 text-[10px]">VivekSeva Community Verification</p>
+            </div>
+          </div>
+
+          <p class="text-[9px] text-slate-400 italic pt-2">
+            Non-governmental certificate of appreciation issued for volunteer seva contributions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. HELPER PUBLIC PROFILE VIEW MODAL (Section 15) -->
+  <div id="modal-helper-profile" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl border border-amber-200 my-8 text-xs">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-navy-900">Helper Profile</h3>
+        <button onclick="window.app.closeModal('modal-helper-profile')" class="text-slate-400 hover:text-slate-600">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <img id="helper-modal-avatar" src="" alt="Helper Photo" class="w-16 h-16 rounded-2xl object-cover border-2 border-saffron-300">
+        <div>
+          <h4 class="text-base font-bold text-navy-900" id="helper-modal-name">Arjun Sharma</h4>
+          <p class="text-slate-500" id="helper-modal-location">South Delhi, Delhi</p>
+          <span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold badge-available-now" id="helper-modal-status">AVAILABLE NOW</span>
+        </div>
+      </div>
+
+      <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-slate-700 italic" id="helper-modal-intro">
+        Software developer and weekend educator...
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <span class="font-bold text-slate-700 block mb-1">Service Categories:</span>
+          <div class="flex flex-wrap gap-1.5" id="helper-modal-categories-chips">
+            <!-- Chips -->
+          </div>
+        </div>
+
+        <div>
+          <span class="font-bold text-slate-700 block mb-1">Skills &amp; Capabilities:</span>
+          <div class="flex flex-wrap gap-1.5" id="helper-modal-skills-chips">
+            <!-- Chips -->
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 text-slate-600">
+          <div>
+            <p><strong>Service Mode:</strong> <span id="helper-modal-mode">BOTH</span></p>
+            <p><strong>Completed Services:</strong> <span id="helper-modal-completed">18</span></p>
+          </div>
+          <div>
+            <p><strong>Level:</strong> <span id="helper-modal-level">Level 3</span></p>
+            <p><strong>Privacy:</strong> <span class="text-emerald-700 font-semibold">Verified Safe</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex justify-end space-x-3">
+        <button onclick="window.app.closeModal('modal-helper-profile')" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 font-bold">
+          Close
+        </button>
+        <button id="helper-modal-request-btn" onclick="window.app.requestHelperFromProfile()" class="px-6 py-2 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold shadow-md">
+          REQUEST HELP
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13. ALTERNATIVE HELPERS MODAL (Section 16) -->
+  <div id="modal-alternative-helpers" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-amber-200 my-8 text-xs">
+      <div class="border-b border-slate-100 pb-3">
+        <span class="text-xs font-bold text-amber-700 uppercase tracking-wider">INSTANT RE-MATCHING</span>
+        <h3 class="text-base font-bold text-navy-900">Alternative Seva Helpers Available</h3>
+        <p class="text-slate-500">The previously requested helper was unavailable. Here are other suitable registered helpers ready to support you.</p>
+      </div>
+
+      <div class="space-y-3" id="alternative-helpers-list-container">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div class="pt-2 text-right">
+        <button onclick="window.app.closeModal('modal-alternative-helpers')" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 font-bold">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 14. EDIT PROFILE MODAL (Section 31) -->
+  <div id="modal-edit-profile" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-amber-200 my-8 text-xs">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-navy-900">Edit Profile</h3>
+        <button onclick="window.app.closeModal('modal-edit-profile')" class="text-slate-400 hover:text-slate-600">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="window.app.handleSaveProfile(event)" class="space-y-3">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Full Name</label>
+          <input type="text" id="edit-profile-name" required class="w-full px-3 py-2 rounded-xl border border-slate-300">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">General Location</label>
+          <input type="text" id="edit-profile-location" required class="w-full px-3 py-2 rounded-xl border border-slate-300">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Service Mode</label>
+          <select id="edit-profile-mode" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+            <option value="BOTH">BOTH (Online &amp; Offline)</option>
+            <option value="OFFLINE">OFFLINE Only</option>
+            <option value="ONLINE">ONLINE Only</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Short Introduction Bio</label>
+          <textarea id="edit-profile-intro" rows="3" class="w-full px-3 py-2 rounded-xl border border-slate-300"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs transition-colors">
+          Save Changes
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 15. ADD AVAILABILITY SLOT MODAL (Section 10) -->
+  <div id="modal-add-slot" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-amber-200 text-xs">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-navy-900">Add Availability Slot</h3>
+        <button onclick="window.app.closeModal('modal-add-slot')" class="text-slate-400 hover:text-slate-600">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="window.app.handleSaveSlot(event)" class="space-y-3">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Day of the Week</label>
+          <select id="slot-day" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Start Time</label>
+            <input type="time" id="slot-start" required value="18:00" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">End Time</label>
+            <input type="time" id="slot-end" required value="20:00" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-saffron-600 hover:bg-saffron-700 text-white font-bold text-xs transition-colors mt-2">
+          Add Slot
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS CONTAINER -->
+  <div id="toast-container"></div>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/matching.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

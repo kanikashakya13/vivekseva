@@ -1,0 +1,320 @@
+/**
+ * VivekSeva - Design Language & Style Specifications
+ * "Serve. Connect. Grow."
+ * Indian Modern + Calm + Inspirational + Trustworthy
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Rozha+One&family=Cinzel:wght@600;700;800&display=swap');
+
+:root {
+  --saffron-primary: #EA580C;
+  --saffron-dark: #C2410C;
+  --saffron-light: #FFF7ED;
+  --saffron-glow: rgba(234, 88, 12, 0.15);
+  
+  --deep-navy: #0F172A;
+  --navy-slate: #1E293B;
+  --charcoal-muted: #475569;
+  
+  --warm-cream: #FDFBF7;
+  --cream-card: #FFFFFF;
+  --cream-alt: #F8F5EE;
+  
+  --muted-gold: #D97706;
+  --gold-light: #FEF3C7;
+  --gold-border: rgba(217, 119, 6, 0.3);
+  
+  --border-subtle: #E2E8F0;
+  --border-saffron: rgba(234, 88, 12, 0.18);
+  
+  --radius-card: 1.125rem;
+  --shadow-warm: 0 10px 30px -5px rgba(234, 88, 12, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+  --shadow-elevated: 0 20px 40px -10px rgba(234, 88, 12, 0.12), 0 8px 16px -4px rgba(15, 23, 42, 0.06);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--warm-cream);
+  color: var(--navy-slate);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .font-heading {
+  font-family: 'Cinzel', serif;
+  color: var(--deep-navy);
+}
+
+.font-serif-accent {
+  font-family: 'Rozha One', serif;
+}
+
+/* Subtle Indian Mandala & Geometric Pattern Backgrounds */
+.mandala-bg-pattern {
+  background-color: var(--warm-cream);
+  background-image: 
+    radial-gradient(rgba(234, 88, 12, 0.06) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(15, 23, 42, 0.03) 1.5px, var(--warm-cream) 1.5px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+}
+
+.saffron-hero-gradient {
+  background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 45%, #FEF3C7 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.saffron-hero-gradient::after {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(234, 88, 12, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* VivekSeva Custom Cards */
+.vs-card {
+  background: var(--cream-card);
+  border: 1px solid var(--border-saffron);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-warm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.vs-card:hover {
+  box-shadow: var(--shadow-elevated);
+  border-color: rgba(234, 88, 12, 0.35);
+}
+
+.vs-card-interactive {
+  cursor: pointer;
+}
+
+.vs-card-interactive:hover {
+  transform: translateY(-2px);
+}
+
+/* Availability Badges */
+.badge-available-now {
+  background-color: #DCFCE7;
+  color: #166534;
+  border: 1px solid #86EFAC;
+}
+
+.badge-available-later {
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
+}
+
+.badge-not-available {
+  background-color: #F1F5F9;
+  color: #475569;
+  border: 1px solid #CBD5E1;
+}
+
+/* Category Specific Color Touches */
+.category-food {
+  border-left: 4px solid #EA580C;
+}
+
+.category-education {
+  border-left: 4px solid #2563EB;
+}
+
+.category-elderly {
+  border-left: 4px solid #D97706;
+}
+
+.category-spiritual {
+  border-left: 4px solid #7E22CE;
+}
+
+/* "What Changes In You" Journey Timeline */
+.growth-journey-step {
+  position: relative;
+}
+
+.growth-journey-step::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 2rem;
+  height: 2px;
+  background-color: #FED7AA;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.growth-journey-step:last-child::before {
+  display: none;
+}
+
+/* Quotation Card */
+.quote-card {
+  position: relative;
+  background: linear-gradient(145deg, #FFFFFF, #FFFBEB);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  border-radius: 1.25rem;
+}
+
+.quote-card::before {
+  content: "“";
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  font-family: 'Rozha One', serif;
+  font-size: 4rem;
+  line-height: 1;
+  color: rgba(234, 88, 12, 0.2);
+  pointer-events: none;
+}
+
+/* Certificate Styles & High Fidelity Print View */
+.certificate-frame {
+  background: #FFFDF9;
+  border: 10px double #B45309;
+  box-shadow: 0 15px 35px rgba(180, 83, 9, 0.15);
+  position: relative;
+}
+
+.certificate-inner-border {
+  border: 2px solid #D97706;
+  position: relative;
+}
+
+.certificate-gold-seal {
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, #FDE68A 0%, #D97706 70%, #92400E 100%);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
+  border: 2px dashed #FFF;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #certificate-print-area, #certificate-print-area * {
+    visibility: visible;
+  }
+  #certificate-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+/* In-App Private Call UI */
+.call-pulse-avatar {
+  position: relative;
+}
+
+.call-pulse-avatar::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border: 3px solid #22C55E;
+  border-radius: 50%;
+  animation: callPulse 1.8s infinite;
+  opacity: 0.7;
+}
+
+@keyframes callPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 0.3; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+/* In-App Chat Elements */
+.chat-thread-box {
+  background: #FAF7F2;
+  border: 1px solid #E2E8F0;
+  border-radius: 1rem;
+}
+
+.chat-bubble-me {
+  background: linear-gradient(135deg, #EA580C, #C2410C);
+  color: #FFFFFF;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.chat-bubble-them {
+  background: #FFFFFF;
+  color: #1E293B;
+  border: 1px solid #E2E8F0;
+  border-bottom-left-radius: 0.25rem;
+}
+
+/* Mobile Bottom Navigation */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #E2E8F0;
+  z-index: 40;
+}
+
+/* Toast Notifications Container */
+#toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast-message {
+  pointer-events: auto;
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
